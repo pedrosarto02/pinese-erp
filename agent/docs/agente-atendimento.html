@@ -1,0 +1,545 @@
+<title>Agente de Atendimento Mercado Mestre</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+:root{
+  --bg:#F3F6F1; --surface:#FFFFFF; --surface-2:#E9EEE6; --ink:#17201B; --muted:#58655D;
+  --line:#D3DCD1; --line-strong:#8C9B91; --accent:#2D6A4E; --accent-ink:#FFFFFF; --accent-soft:#DCEBE2;
+  --auto:#256F45; --auto-bg:#E1F1E6; --human:#94600B; --human-bg:#FBEFD7; --stop:#A73F33; --stop-bg:#F7E2DE;
+  --sys:#285A76; --sys-bg:#E0EBF2; --shadow:0 1px 2px rgba(23,32,27,.06),0 6px 20px rgba(23,32,27,.06);
+  --f-display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
+  --f-body:"Figtree","Segoe UI",system-ui,-apple-system,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,"Cascadia Mono",Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#101613; --surface:#17201B; --surface-2:#1E2923; --ink:#E5ECE7; --muted:#9BA9A0;
+    --line:#2B3830; --line-strong:#5D6E64; --accent:#74C297; --accent-ink:#0E1912; --accent-soft:#1D3328;
+    --auto:#80D4A2; --auto-bg:#16301F; --human:#EBB75C; --human-bg:#33270F; --stop:#F2907F; --stop-bg:#3A1E19;
+    --sys:#89C1E0; --sys-bg:#132A37; --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.25);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#101613; --surface:#17201B; --surface-2:#1E2923; --ink:#E5ECE7; --muted:#9BA9A0;
+  --line:#2B3830; --line-strong:#5D6E64; --accent:#74C297; --accent-ink:#0E1912; --accent-soft:#1D3328;
+  --auto:#80D4A2; --auto-bg:#16301F; --human:#EBB75C; --human-bg:#33270F; --stop:#F2907F; --stop-bg:#3A1E19;
+  --sys:#89C1E0; --sys-bg:#132A37; --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.25);
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.6;padding-inline:20px;padding-block:0 64px}
+.wrap{max-width:1080px;margin:0 auto}
+h1,h2,h3{font-family:var(--f-display);line-height:1.12;text-wrap:balance;margin:0}
+h2{font-size:clamp(26px,3.4vw,34px);font-weight:700;letter-spacing:-.01em}
+h3{font-size:19px;font-weight:700}
+p{margin:0}
+.eyebrow{font-size:12.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--accent)}
+.lede{color:var(--muted);max-width:66ch;font-size:17px}
+code,.mono{font-family:var(--f-mono);font-size:.86em}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+
+/* hero */
+.hero{padding-block:48px 28px;display:grid;gap:18px}
+.hero h1{font-size:clamp(34px,5.6vw,58px);font-weight:800;letter-spacing:-.02em;max-width:16ch}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.facts{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.fact{background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-size:14px}
+.fact b{font-variant-numeric:tabular-nums}
+.toc{display:flex;flex-wrap:wrap;gap:6px 14px;padding-block:14px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);font-size:14px}
+.toc a{color:var(--muted);text-decoration:none;font-weight:600}
+.toc a:hover{color:var(--accent)}
+
+section{padding-block:56px 8px;display:grid;gap:22px}
+.sec-head{display:grid;gap:8px}
+
+/* dores */
+.pains{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.pain{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px 18px;display:grid;gap:4px}
+.pain b{font-family:var(--f-display);font-size:17px}
+.pain span{color:var(--muted);font-size:14.5px}
+.callout{background:var(--accent-soft);border-radius:12px;padding:16px 20px;display:grid;gap:6px;max-width:820px}
+.callout b{color:var(--accent)}
+
+/* objetivos */
+.goals{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:0;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface)}
+.goal{padding:16px 20px;border-bottom:1px solid var(--line);display:grid;gap:4px}
+.goal b{font-size:16px}
+.goal span{color:var(--muted);font-size:14.5px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.kpi{border-top:3px solid var(--accent);padding-top:10px;display:grid;gap:2px}
+.kpi .num{font-family:var(--f-display);font-size:30px;font-weight:800;font-variant-numeric:tabular-nums}
+.kpi span{color:var(--muted);font-size:14px}
+
+/* legenda */
+.legend{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:13.5px;color:var(--muted)}
+.legend i{display:inline-block;width:14px;height:14px;border-radius:4px;vertical-align:-2px;margin-right:6px;border:1.5px solid}
+
+/* fluxogramas */
+.diagram{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:24px 18px 28px;box-shadow:var(--shadow);overflow-x:auto}
+.diagram-head{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 16px;align-items:baseline;margin-bottom:18px;padding-inline:6px}
+.diagram-head p{color:var(--muted);font-size:14.5px;max-width:60ch}
+.flow{display:flex;flex-direction:column;align-items:center;min-width:0}
+.node{width:100%;max-width:400px;background:var(--surface);border:1.5px solid var(--line-strong);border-radius:10px;padding:10px 14px;text-align:center;position:relative;z-index:1}
+.node b{display:block;font-size:15px;line-height:1.3}
+.node small{display:block;color:var(--muted);font-size:12.8px;line-height:1.4;margin-top:3px}
+.k-start{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.k-start small{color:var(--bg);opacity:.75}
+.k-decide{background:var(--sys-bg);border-color:var(--sys);border-style:solid;border-radius:999px}
+.k-decide b::before{content:"◆ ";color:var(--sys);font-size:11px;vertical-align:1px}
+.k-auto{background:var(--auto-bg);border-color:var(--auto)}
+.k-human{background:var(--human-bg);border-color:var(--human)}
+.k-stop{background:var(--stop-bg);border-color:var(--stop)}
+.k-end{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.k-end small{color:var(--accent-ink);opacity:.8}
+.k-auto b::after,.k-human b::after{font-family:var(--f-body);font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;display:table;margin:5px auto 0;padding:1px 8px;border-radius:999px;white-space:nowrap}
+.k-auto b::after{content:"sozinho";color:var(--auto);border:1px solid var(--auto)}
+.k-human b::after{content:"você aprova";color:var(--human);border:1px solid var(--human)}
+.arr{width:2px;height:26px;background:var(--line-strong);position:relative;flex:none}
+.arr::after{content:"";position:absolute;bottom:-1px;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top:6px solid var(--line-strong);border-bottom:0}
+.arr[data-l]::before{content:attr(data-l);position:absolute;left:10px;top:50%;transform:translateY(-50%);white-space:nowrap;font-size:12px;font-weight:700;color:var(--muted)}
+.side{font-size:12px;color:var(--muted);margin-top:6px;background:var(--surface-2);border-radius:999px;padding:2px 10px}
+.branch{--cols:2;display:grid;grid-template-columns:repeat(var(--cols),minmax(0,1fr));gap:14px;width:100%;max-width:calc(var(--cols) * 250px);position:relative;padding-top:0}
+.branch.c3{--cols:3}.branch.c4{--cols:4}
+.branch::before,.branch.merge::after{content:"";position:absolute;left:calc(50% / var(--cols));right:calc(50% / var(--cols));height:2px;background:var(--line-strong)}
+.branch::before{top:0}
+.branch.merge::after{bottom:0}
+.lane{display:flex;flex-direction:column;align-items:center;min-width:0}
+.lane>.node{max-width:none}
+.edge{font-size:11.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--sys);background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:1px 9px;margin-bottom:6px;position:relative;z-index:1;text-align:center}
+.stub{width:2px;height:16px;background:var(--line-strong);flex:none}
+.tail{flex:1;width:2px;min-height:18px;background:var(--line-strong)}
+.flow>.lead{width:2px;height:14px;background:var(--line-strong)}
+
+.hflow{display:flex;align-items:stretch;gap:0;flex-wrap:nowrap}
+.hflow .node{max-width:none;flex:1;display:flex;flex-direction:column;justify-content:center}
+.harr{flex:none;width:30px;align-self:center;height:2px;background:var(--line-strong);position:relative}
+.harr::after{content:"";position:absolute;right:-1px;top:50%;transform:translateY(-50%);border:5px solid transparent;border-left:6px solid var(--line-strong);border-right:0}
+.loopback{margin-top:12px;text-align:center;font-size:13px;color:var(--muted)}
+
+@media (max-width:700px){
+  .diagram{padding:18px 12px 22px}
+  .branch,.branch.c3,.branch.c4{grid-template-columns:1fr;gap:6px;max-width:400px}
+  .branch::before,.branch.merge::after{display:none}
+  .lane{border-left:2px solid var(--line-strong);padding-left:12px;align-items:stretch}
+  .lane .stub,.lane .tail{display:none}
+  .edge{align-self:flex-start}
+  .hflow{flex-direction:column}
+  .harr{width:2px;height:24px;align-self:center}
+  .harr::after{right:auto;left:50%;top:auto;bottom:-1px;transform:translateX(-50%);border:5px solid transparent;border-top:6px solid var(--line-strong);border-bottom:0}
+}
+
+/* matriz */
+.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:620px;font-size:14.5px}
+th,td{text-align:left;padding:11px 16px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:var(--surface-2)}
+tr:last-child td{border-bottom:0}
+td:last-child{color:var(--muted)}
+.chip{display:inline-block;font-size:12px;font-weight:700;padding:2px 10px;border-radius:999px;white-space:nowrap;border:1px solid}
+.chip.auto{color:var(--auto);background:var(--auto-bg);border-color:var(--auto)}
+.chip.human{color:var(--human);background:var(--human-bg);border-color:var(--human)}
+.chip.stop{color:var(--stop);background:var(--stop-bg);border-color:var(--stop)}
+
+/* políticas */
+.policies{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.policy{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px 18px;display:grid;gap:4px;align-content:start}
+.policy .big{font-family:var(--f-display);font-size:26px;font-weight:800}
+.policy span{color:var(--muted);font-size:14.5px}
+.policy.warn .big{color:var(--stop)}
+.tones{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+.tone{border:1px dashed var(--line-strong);border-radius:12px;padding:16px 18px;display:grid;gap:8px}
+.tone q{font-size:15px;quotes:"“" "”"}
+.tone span{font-size:13px;color:var(--muted)}
+
+/* regras ML */
+.rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.rule{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px 18px;display:grid;gap:6px;align-content:start}
+.rule .big{font-family:var(--f-display);font-size:34px;font-weight:800;line-height:1;color:var(--sys);font-variant-numeric:tabular-nums}
+.rule b{font-size:15.5px}
+.rule span{color:var(--muted);font-size:14px}
+.rule.hot{border-color:var(--human);background:var(--human-bg)}
+.rule.hot .big{color:var(--human)}
+
+/* arquitetura */
+.zones{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.zone{border:1.5px dashed var(--line-strong);border-radius:14px;padding:12px;display:grid;gap:8px;align-content:start;background:var(--bg)}
+.zone h3{font-size:14px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-family:var(--f-body)}
+.zone .node{max-width:none;text-align:left}
+.zone.ml{border-color:var(--sys)}
+.zone.ag{border-color:var(--accent)}
+.zone-note{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:14px;color:var(--muted)}
+@media (max-width:860px){.zones{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:520px){.zones{grid-template-columns:1fr}}
+.steps{display:grid;gap:0;counter-reset:s;max-width:820px}
+.steps li{list-style:none;counter-increment:s;display:grid;grid-template-columns:34px 1fr;gap:12px;padding-block:9px;border-bottom:1px solid var(--line);font-size:15px}
+.steps li::before{content:counter(s);font-family:var(--f-display);font-weight:800;color:var(--accent);font-size:18px;font-variant-numeric:tabular-nums}
+.steps{padding:0;margin:0}
+.stack{display:flex;flex-wrap:wrap;gap:8px}
+.stack span{font-family:var(--f-mono);font-size:13px;background:var(--surface);border:1px solid var(--line);padding:4px 10px;border-radius:6px}
+
+/* módulos */
+.modules{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}
+.module{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px 18px;display:grid;gap:4px}
+.module span{color:var(--muted);font-size:14.5px}
+
+/* roadmap */
+.road{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0;counter-reset:r}
+.stage{padding:14px 14px 14px 0;border-top:3px solid var(--line);display:grid;gap:4px;align-content:start;counter-increment:r}
+.stage::before{content:"Etapa " counter(r);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.stage b{font-family:var(--f-display);font-size:17px}
+.stage span{color:var(--muted);font-size:14px}
+.stage.now{border-top-color:var(--accent)}
+.stage.now::before{content:"Etapa " counter(r) " · estamos aqui";color:var(--accent)}
+@media (max-width:760px){.road{grid-template-columns:1fr}.stage{padding-left:0}}
+
+/* perguntas */
+.questions{display:grid;gap:8px;max-width:860px;padding:0;margin:0}
+.questions li{list-style:none}
+.questions label{display:grid;grid-template-columns:22px 1fr;gap:12px;align-items:start;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 16px;cursor:pointer}
+.questions input{width:18px;height:18px;margin-top:3px;accent-color:var(--accent)}
+.questions b{display:block}
+.questions span{color:var(--muted);font-size:14px}
+.questions input:checked+div b{text-decoration:line-through;color:var(--muted)}
+footer{margin-top:56px;padding-top:18px;border-top:1px solid var(--line);color:var(--muted);font-size:13.5px;display:grid;gap:4px}
+@media (prefers-reduced-motion:no-preference){.toc a{transition:color .15s}}
+</style>
+
+<div class="wrap">
+  <header class="hero">
+    <span class="eyebrow">Documento para validação · v1 · 16/10/2026</span>
+    <h1>Um agente de IA que atende, vende e <em>protege a reputação</em>, 24 horas por dia.</h1>
+    <p class="lede">Desenho completo do agente de atendimento para as 2 contas no Mercado Livre: o que ele faz, como decide, onde precisa da sua aprovação e quais regras do Mercado Livre ele respeita. O objetivo desta página é validar tudo isso antes de começar a construir.</p>
+    <div class="facts">
+      <span class="fact"><b>2</b> contas no ML</span>
+      <span class="fact"><b>~40</b> anúncios ativos + <b>~40</b> a publicar</span>
+      <span class="fact">até <b>50</b> atendimentos/dia</span>
+      <span class="fact">Full + coleta/agência</span>
+      <span class="fact">ERP Olist</span>
+      <span class="fact">Casa · Jardim · Decoração · Ferramentas</span>
+    </div>
+  </header>
+
+  <nav class="toc" aria-label="Seções">
+    <a href="#problema">O problema</a><a href="#objetivos">Objetivos</a><a href="#cerebro">Como o agente pensa</a><a href="#prevenda">Pré-venda</a><a href="#posvenda">Pós-venda</a><a href="#reclamacoes">Reclamações</a><a href="#insights">Insights</a><a href="#autonomia">Autonomia</a><a href="#politicas">Políticas</a><a href="#regras">Regras do ML</a><a href="#arquitetura">Arquitetura</a><a href="#painel">Painel</a><a href="#roadmap">Roadmap</a><a href="#perguntas">Em aberto</a>
+  </nav>
+
+  <section id="problema">
+    <div class="sec-head"><span class="eyebrow">Ponto de partida</span><h2>O que trava o atendimento hoje</h2>
+    <p class="lede">Hoje o dono e mais uma pessoa atendem só em horário comercial. Noite e fim de semana ficam descobertos, e é justamente quando muita gente pergunta antes de comprar.</p></div>
+    <div class="pains">
+      <div class="pain"><b>Demora fora do horário</b><span>A pergunta da noite é respondida de manhã, e a essa altura a venda já foi para o concorrente.</span></div>
+      <div class="pain"><b>Perguntas repetitivas</b><span>Medidas, material, o que acompanha, prazo. Tempo da equipe gasto com o que já está no anúncio.</span></div>
+      <div class="pain"><b>Reclamações e mediações</b><span>Cada reclamação mal resolvida pesa na reputação e na exposição dos anúncios.</span></div>
+      <div class="pain"><b>Devoluções altas</b><span>Principais causas: <b>arrependimento/atraso</b> e <b>dificuldade de montagem ou uso</b>.</span></div>
+    </div>
+    <div class="callout"><b>Onde está a maior alavanca</b><p>Devolução por montagem ou uso é a mais evitável. Na pré-venda, deixar claro como é a montagem. No pós-venda, ensinar o cliente a usar, com o manual e o vídeo em mãos. Se o cliente consegue usar o produto, ele não devolve.</p></div>
+  </section>
+
+  <section id="objetivos">
+    <div class="sec-head"><span class="eyebrow">Para que serve</span><h2>Cinco objetivos e como medir cada um</h2></div>
+    <div class="goals">
+      <div class="goal"><b>Responder 24/7, em minutos</b><span>Responde sozinho as perguntas factuais e entrega o resto com a sugestão pronta para você.</span></div>
+      <div class="goal"><b>Aumentar a conversão</b><span>Resposta precisa e trata a objeção: garantia de 30 dias, entrega Full, montagem fácil.</span></div>
+      <div class="goal"><b>Diminuir as devoluções</b><span>Deixa a expectativa clara antes da compra e dá suporte de uso e montagem depois.</span></div>
+      <div class="goal"><b>Proteger a reputação</b><span>Prioriza as reclamações pela janela de 48h e pelos prazos do ML e sugere a melhor saída.</span></div>
+      <div class="goal"><b>Melhorar os anúncios</b><span>Relatório semanal com dúvidas recorrentes, motivos de devolução e o que ajustar em cada anúncio.</span></div>
+    </div>
+    <div class="kpis">
+      <div class="kpi"><span>Tempo de resposta</span><span class="num">&lt; 10 min</span><span>24/7, medido pelo indicador oficial do ML</span></div>
+      <div class="kpi"><span>Reputação</span><span class="num">Verde</span><span>reclamações resolvidas na janela de 48h</span></div>
+      <div class="kpi"><span>Devoluções</span><span class="num">↓</span><span>foco em montagem/uso e arrependimento</span></div>
+      <div class="kpi"><span>Conversão</span><span class="num">↑</span><span>quem perguntou e comprou depois</span></div>
+    </div>
+  </section>
+
+  <section id="cerebro">
+    <div class="sec-head"><span class="eyebrow">Fluxograma 1 de 6</span><h2>Como o agente pensa</h2>
+    <p class="lede">Todo atendimento, seja pergunta, mensagem ou reclamação, passa pelo mesmo caminho. Os fluxos seguintes detalham cada canal.</p></div>
+    <div class="legend" aria-label="Legenda">
+      <span><i style="background:var(--ink);border-color:var(--ink)"></i>Início</span>
+      <span><i style="background:var(--sys-bg);border-color:var(--sys)"></i>Decisão</span>
+      <span><i style="background:var(--surface);border-color:var(--line-strong)"></i>Etapa</span>
+      <span><i style="background:var(--auto-bg);border-color:var(--auto)"></i>Agente faz sozinho</span>
+      <span><i style="background:var(--human-bg);border-color:var(--human)"></i>Você aprova</span>
+      <span><i style="background:var(--stop-bg);border-color:var(--stop)"></i>Escala / bloqueia</span>
+      <span><i style="background:var(--accent);border-color:var(--accent)"></i>Fim</span>
+    </div>
+    <div class="diagram">
+      <div class="flow">
+        <div class="node k-start"><b>Chega um atendimento</b><small>pergunta, mensagem ou reclamação: o ML avisa na hora</small></div>
+        <div class="arr"></div>
+        <div class="node k-decide"><b>Já foi tratado?</b><small>evita responder duas vezes</small></div>
+        <div class="arr" data-l="não"></div>
+        <div class="node"><b>Reúne o contexto</b><small>anúncio · ficha técnica · Olist · manual · pedido · envio · histórico da conversa</small></div>
+        <div class="arr"></div>
+        <div class="node"><b>Entende o pedido</b><small>o que o cliente quer · sentimento · risco · de qual conta</small></div>
+        <div class="arr"></div>
+        <div class="node"><b>Escreve a resposta</b><small>tom do canal + políticas da loja, só com fatos que têm fonte</small></div>
+        <div class="arr"></div>
+        <div class="node k-decide"><b>Passa na checagem de segurança?</b><small>tamanho · sem contato ou link · sem texto repetido · respeita a política</small></div>
+        <span class="side">se não passa, reescreve</span>
+        <div class="arr" data-l="sim"></div>
+        <div class="node k-decide"><b>Pode enviar sozinho?</b><small>matriz de autonomia + grau de confiança</small></div>
+        <div class="lead"></div>
+        <div class="branch merge">
+          <div class="lane"><div class="stub"></div><span class="edge">sim</span><div class="node k-auto"><b>Envia no ML</b><small>em minutos, inclusive à noite e no fim de semana</small></div><div class="tail"></div></div>
+          <div class="lane"><div class="stub"></div><span class="edge">não</span><div class="node k-human"><b>Fila de aprovação</b><small>você aprova, edita ou rejeita no painel</small></div><div class="tail"></div></div>
+        </div>
+        <div class="arr"></div>
+        <div class="node k-end"><b>Registra e aprende</b><small>métricas · base de conhecimento · relatório semanal</small></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="prevenda">
+    <div class="sec-head"><span class="eyebrow">Fluxograma 2 de 6</span><h2>Pergunta pré-venda: converter</h2>
+    <p class="lede">No ML, cada pergunta aceita <b>uma única resposta, sem edição</b>. Por isso o agente só responde sozinho quando tem certeza. Na dúvida, prefere esperar você.</p></div>
+    <div class="diagram">
+      <div class="flow">
+        <div class="node k-start"><b>Nova pergunta no anúncio</b><small>qualquer hora, qualquer uma das 2 contas</small></div>
+        <div class="arr"></div>
+        <div class="node k-decide"><b>Que tipo de pergunta?</b></div>
+        <div class="lead"></div>
+        <div class="branch merge">
+          <div class="lane"><div class="stub"></div><span class="edge">factual</span><div class="node"><b>Busca a resposta</b><small>ficha técnica, Olist e manual: medidas, material, o que acompanha</small></div><div class="tail"></div></div>
+          <div class="lane"><div class="stub"></div><span class="edge">objeção</span><div class="node"><b>Responde e tira a objeção</b><small>garantia de 30 dias · entrega Full · montagem fácil</small></div><div class="tail"></div></div>
+        </div>
+        <div class="arr"></div>
+        <div class="node k-decide"><b>Confiança alta?</b><small>informação existe e o tema não é sensível</small></div>
+        <div class="lead"></div>
+        <div class="branch merge">
+          <div class="lane"><div class="stub"></div><span class="edge">sim</span><div class="node k-auto"><b>Responde na hora</b><small>tom próximo e cordial · até 2.000 caracteres</small></div><div class="tail"></div></div>
+          <div class="lane"><div class="stub"></div><span class="edge">não</span><div class="node k-human"><b>Sugestão pronta para você</b><small>pedido de contato, negociação, informação ausente</small></div><div class="tail"></div></div>
+        </div>
+        <div class="arr"></div>
+        <div class="node k-end"><b>Mede o resultado</b><small>tempo de resposta · essa pergunta virou venda?</small></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="posvenda">
+    <div class="sec-head"><span class="eyebrow">Fluxograma 3 de 6</span><h2>Pós-venda: ajudar a usar e evitar a devolução</h2>
+    <p class="lede">No pós-venda o ML só deixa o vendedor <b>responder</b>, nunca puxar a conversa. Nas vendas Full, quem fala com o agente é o <b>assistente de IA do próprio ML</b>, e só depois da entrega.</p></div>
+    <div class="diagram">
+      <div class="flow">
+        <div class="node k-start"><b>O cliente escreve</b><small>ou o assistente de IA do ML, nas vendas Full</small></div>
+        <div class="arr"></div>
+        <div class="node k-decide"><b>A conversa está liberada?</b><small>o ML bloqueia em mediação, cancelamento, reembolso ou após 30 dias</small></div>
+        <span class="side">se bloqueada, só registra</span>
+        <div class="arr" data-l="sim"></div>
+        <div class="node k-decide"><b>Do que o cliente precisa?</b></div>
+        <div class="lead"></div>
+        <div class="branch c4 merge">
+          <div class="lane"><div class="stub"></div><span class="edge">uso / montagem</span><div class="node k-auto"><b>Passo a passo</b><small>com o manual em PDF anexado ou o vídeo</small></div><div class="tail"></div></div>
+          <div class="lane"><div class="stub"></div><span class="edge">cadê meu pedido</span><div class="node k-auto"><b>Status e prazo</b><small>direto do rastreio do envio</small></div><div class="tail"></div></div>
+          <div class="lane"><div class="stub"></div><span class="edge">faltou item no kit</span><div class="node k-human"><b>Propõe 20% de desconto</b><small>sem devolver o produto</small></div><div class="tail"></div></div>
+          <div class="lane"><div class="stub"></div><span class="edge">defeito / devolver</span><div class="node k-human"><b>Orienta o uso primeiro</b><small>depois aplica a troca/devolução de 30 dias</small></div><div class="tail"></div></div>
+        </div>
+        <div class="arr"></div>
+        <div class="node"><b>Envia a mensagem</b><small>até 350 caracteres · tom profissional · texto sempre único</small></div>
+        <div class="arr"></div>
+        <div class="node k-decide"><b>Resolveu?</b></div>
+        <div class="lead"></div>
+        <div class="branch">
+          <div class="lane"><div class="stub"></div><span class="edge">sim</span><div class="node k-end"><b>Registra o motivo</b><small>vira insight para o anúncio</small></div></div>
+          <div class="lane"><div class="stub"></div><span class="edge">não</span><div class="node k-stop"><b>Escala para você</b><small>com o histórico e a sugestão</small></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="reclamacoes">
+    <div class="sec-head"><span class="eyebrow">Fluxograma 4 de 6</span><h2>Reclamação: proteger a reputação</h2>
+    <p class="lede">Há uma janela de ouro. Em muitas reclamações, resolver bem nas <b>primeiras 48h</b> faz com que ela <b>não conte</b> na reputação. O agente corre contra esse relógio, e quem decide é sempre você.</p></div>
+    <div class="diagram">
+      <div class="flow">
+        <div class="node k-start"><b>Reclamação aberta</b><small>produto não recebido · diferente ou com defeito · cancelamento</small></div>
+        <div class="arr"></div>
+        <div class="node"><b>Prioriza pelo risco</b><small>afeta a reputação? · janela de 48h · prazo de cada ação</small></div>
+        <div class="arr"></div>
+        <div class="node"><b>Analisa o caso</b><small>pedido · envio · conversa · fotos · custo da devolução</small></div>
+        <div class="arr"></div>
+        <div class="node"><b>Sugere a melhor saída</b><small>orientar o uso · 20% para kit incompleto · aceitar a devolução · comprovar o envio</small></div>
+        <div class="arr"></div>
+        <div class="node k-human"><b>Você decide no painel</b><small>com o cronômetro da janela de 48h à vista</small></div>
+        <div class="arr" data-l="aprovado ou editado"></div>
+        <div class="node k-auto"><b>Executa no ML</b><small>mensagem ao comprador e ação aprovada</small></div>
+        <div class="arr"></div>
+        <div class="node k-decide"><b>Virou mediação do ML?</b></div>
+        <div class="lead"></div>
+        <div class="branch">
+          <div class="lane"><div class="stub"></div><span class="edge">sim</span><div class="node k-human"><b>Fala só com o mediador</b><small>regra do ML; sempre com a sua aprovação</small></div></div>
+          <div class="lane"><div class="stub"></div><span class="edge">não</span><div class="node k-end"><b>Fecha e aprende</b><small>motivo entra no relatório semanal</small></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="insights">
+    <div class="sec-head"><span class="eyebrow">Fluxograma 5 de 6</span><h2>Ciclo semanal de insights</h2>
+    <p class="lede">O agente também aprende com o que ouve. Cada dúvida repetida ou devolução é um sinal de que o anúncio pode melhorar.</p></div>
+    <div class="diagram">
+      <div class="hflow">
+        <div class="node k-start"><b>Semana de atendimentos</b><small>perguntas · mensagens · reclamações</small></div>
+        <div class="harr"></div>
+        <div class="node"><b>Agrupa por produto e tema</b><small>"tem peso máximo?" apareceu 12 vezes</small></div>
+        <div class="harr"></div>
+        <div class="node k-human"><b>Relatório para você</b><small>ajustar a descrição, a foto, o vídeo ou o manual na caixa</small></div>
+        <div class="harr"></div>
+        <div class="node k-end"><b>Anúncio melhor</b><small>menos dúvidas, menos devoluções, mais vendas</small></div>
+      </div>
+      <p class="loopback">↻ e o ciclo recomeça na semana seguinte</p>
+    </div>
+  </section>
+
+  <section id="autonomia">
+    <div class="sec-head"><span class="eyebrow">Modo híbrido</span><h2>Quem decide o quê</h2>
+    <p class="lede">O agente começa respondendo sozinho só o que é seguro. Tudo que envolve dinheiro passa por você. A autonomia é ajustável por categoria no painel e pode crescer conforme a confiança no agente aumenta.</p></div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Situação</th><th>Quem decide</th><th>Observação</th></tr></thead>
+        <tbody>
+          <tr><td>Pergunta factual com alta confiança: medidas, material, cor, o que acompanha</td><td><span class="chip auto">Agente sozinho</span></td><td>Só com base em anúncio, ficha, Olist e manual</td></tr>
+          <tr><td>Pós-venda: dúvida de uso ou montagem</td><td><span class="chip auto">Agente sozinho</span></td><td>Pode anexar o manual em PDF</td></tr>
+          <tr><td>Pós-venda: status do envio ou da entrega</td><td><span class="chip auto">Agente sozinho</span></td><td>Dados do rastreio do ML</td></tr>
+          <tr><td>Pergunta com baixa confiança, informação ausente ou tema sensível</td><td><span class="chip human">Você aprova</span></td><td>A sugestão chega pronta no painel</td></tr>
+          <tr><td>"Veio faltando", "quebrou", "quero devolver"</td><td><span class="chip human">Você aprova</span></td><td>A sugestão segue a política da loja</td></tr>
+          <tr><td>Qualquer reclamação ou mediação</td><td><span class="chip human">Você aprova</span></td><td>Prioridade pela janela de 48h</td></tr>
+          <tr><td>Reembolso, devolução, desconto ou abrir disputa</td><td><span class="chip stop">Sempre você</span></td><td>Alçada financeira do agente: zero</td></tr>
+          <tr><td>Cliente agressivo, ameaça (Procon, Reclame Aqui) ou spam</td><td><span class="chip stop">Sempre você</span></td><td>Opção de bloquear o perguntador</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout"><b>Piloto calibrado</b><p>Nas primeiras 1 a 2 semanas, tudo passa pela sua aprovação. Com isso medimos quantas sugestões você aprovaria sem mudar nada. Só depois liberamos o automático da matriz acima.</p></div>
+  </section>
+
+  <section id="politicas">
+    <div class="sec-head"><span class="eyebrow">Regras da loja</span><h2>O que o agente promete (e o que nunca promete)</h2></div>
+    <div class="policies">
+      <div class="policy"><span>Garantia de vendedor</span><span class="big">30 dias</span><span>contra defeito</span></div>
+      <div class="policy"><span>Troca e devolução</span><span class="big">30 dias</span><span>além da regra do ML</span></div>
+      <div class="policy"><span>Kit com item faltando</span><span class="big">20% off</span><span>sem devolver o produto; sempre com a sua aprovação</span></div>
+      <div class="policy warn"><span>Peça de reposição</span><span class="big">Nunca</span><span>para nenhum SKU; o agente não promete peça</span></div>
+    </div>
+    <div class="tones">
+      <div class="tone"><span class="eyebrow">Tom na pré-venda · próximo e cordial</span><q>Oi! Tudo bem? Sim, o suporte acompanha os parafusos e a montagem leva uns 10 minutos, só com chave Phillips. Chega rapidinho, pelo Full 😊</q><span>Exemplo ilustrativo</span></div>
+      <div class="tone"><span class="eyebrow">Tom no pós-venda · profissional e objetivo</span><q>Olá! Para encaixar a base, alinhe os furos laterais antes de apertar os parafusos. Anexei o manual com o passo 3 destacado. Se persistir, nos avise por aqui.</q><span>Exemplo ilustrativo · até 350 caracteres</span></div>
+    </div>
+  </section>
+
+  <section id="regras">
+    <div class="sec-head"><span class="eyebrow">Pesquisa na documentação oficial · 14/10/2026</span><h2>Regras do Mercado Livre que moldam o agente</h2>
+    <p class="lede">O agente foi desenhado em torno destas restrições. Ignorar qualquer uma delas significa resposta moderada, conversa bloqueada ou risco para a conta.</p></div>
+    <div class="rules">
+      <div class="rule"><span class="big">1×</span><b>Uma resposta por pergunta</b><span>Não é possível editar nem complementar depois. Na dúvida, o agente espera você.</span></div>
+      <div class="rule"><span class="big">2.000</span><b>Caracteres na pré-venda</b><span>Sem telefone, e-mail, links externos ou redes sociais. O ML modera.</span></div>
+      <div class="rule"><span class="big">350</span><b>Caracteres no pós-venda</b><span>Mensagens curtas. Manuais vão como anexo em PDF, de até 25 MB.</span></div>
+      <div class="rule"><span class="big">0</span><b>Conversas iniciadas pelo vendedor</b><span>Quem começa é o comprador. Há só um "motivo de contato" limitado, e nunca depois da entrega.</span></div>
+      <div class="rule hot"><span class="big">02/02/26</span><b>IA do ML no meio do Full</b><span>Nas vendas Full, o pós-venda passa pelo assistente de IA do ML, uma mensagem por vez, com 48h úteis para resolver.</span></div>
+      <div class="rule hot"><span class="big">48h</span><b>Janela de ouro das reclamações</b><span>Resolver bem nesse prazo pode tirar a reclamação da conta da reputação.</span></div>
+      <div class="rule"><span class="big">✕</span><b>Nada de mensagens em série</b><span>Texto repetitivo ou com cara de modelo é moderado e pode suspender a conta. Cada resposta do agente é única.</span></div>
+      <div class="rule"><span class="big">%</span><b>Reembolso parcial tabelado</b><span>Dentro da reclamação, o ML só aceita os percentuais que ele mesmo oferece. Os 20% podem não estar na lista, e isso está em validação.</span></div>
+    </div>
+    <div class="callout"><b>E a concorrência?</b><p>O ML já sugere respostas por IA e tem um assistente de pós-venda. No mercado há GoBots (a partir de R$ 699/mês), Predize e Real Trends. O nosso diferencial: reclamações guiadas por prazo e reputação, suporte de uso com os <b>seus</b> manuais e vídeos, insights para os anúncios e você no controle, com a política escrita por você.</p></div>
+  </section>
+
+  <section id="arquitetura">
+    <div class="sec-head"><span class="eyebrow">Fluxograma 6 de 6</span><h2>Como as peças se conectam</h2>
+    <p class="lede">O painel e a "porta de entrada" ficam na nuvem, sempre no ar. O agente roda na sua máquina durante os testes e vai para um servidor próprio antes de operar 24/7.</p></div>
+    <div class="diagram">
+      <div class="zones">
+        <div class="zone ml"><h3>Mercado Livre</h3>
+          <div class="node k-start"><b>Cliente</b><small>ou assistente de IA do ML</small></div>
+          <div class="node"><b>API do ML</b><small>perguntas · mensagens · reclamações · pedidos · envios</small></div>
+        </div>
+        <div class="zone"><h3>Na nuvem · Vercel</h3>
+          <div class="node"><b>Porta de entrada</b><small>recebe o aviso do ML e confirma em menos de 0,5 s</small></div>
+          <div class="node"><b>Painel web</b><small>caixa de entrada · aprovação · base · métricas</small></div>
+          <div class="node"><b>Conexão das contas</b><small>autorização segura das 2 contas</small></div>
+        </div>
+        <div class="zone"><h3>Banco · Supabase</h3>
+          <div class="node"><b>Fila de atendimentos</b><small>nada se perde, nada é respondido duas vezes</small></div>
+          <div class="node"><b>Base de conhecimento</b><small>produto/SKU → anúncios das 2 contas, manuais, vídeos, políticas</small></div>
+          <div class="node"><b>Histórico e métricas</b><small>conversas, aprovações, auditoria</small></div>
+        </div>
+        <div class="zone ag"><h3>Agente · sua máquina → servidor</h3>
+          <div class="node k-end"><b>Agente de IA</b><small>LangGraph.js · modelo via OpenRouter</small></div>
+          <div class="node"><b>Olist ERP</b><small>especificações de cada produto</small></div>
+        </div>
+      </div>
+    </div>
+    <h3>O caminho de uma pergunta feita às 23h</h3>
+    <ol class="steps">
+      <li>O cliente pergunta "aguenta quantos quilos?" no anúncio.</li>
+      <li>O ML avisa a porta de entrada na Vercel, que guarda o aviso na fila e confirma na hora.</li>
+      <li>O agente pega o atendimento da fila e busca o anúncio, a ficha, o Olist e o manual.</li>
+      <li>Ele escreve a resposta e passa pela checagem de segurança.</li>
+      <li>Com confiança alta, responde no ML em poucos minutos. Sem confiança, deixa a sugestão no painel.</li>
+      <li>Tudo fica registrado: tempo de resposta e, depois, se essa pergunta virou venda.</li>
+    </ol>
+    <div class="stack" aria-label="Tecnologias">
+      <span>Next.js · Vercel</span><span>Supabase Cloud</span><span>LangGraph.js (TypeScript)</span><span>OpenRouter</span><span>Olist API</span><span>WhatsApp · Evolution (fase 2)</span>
+    </div>
+  </section>
+
+  <section id="painel">
+    <div class="sec-head"><span class="eyebrow">O que você vai usar</span><h2>Os seis módulos do painel</h2>
+    <p class="lede">Viram um protótipo navegável, validado módulo a módulo antes de qualquer código. O WhatsApp para alertas e aprovação rápida entra numa segunda fase.</p></div>
+    <div class="modules">
+      <div class="module"><b>Caixa de entrada unificada</b><span>Perguntas, mensagens e reclamações das 2 contas num só lugar, com prazos à vista.</span></div>
+      <div class="module"><b>Detalhe e aprovação</b><span>Contexto completo, sugestão com nível de confiança e o porquê. Aprovar, editar ou rejeitar em 1 clique.</span></div>
+      <div class="module"><b>Reclamações</b><span>Linha do tempo, cronômetro das 48h e as saídas possíveis com o custo de cada uma.</span></div>
+      <div class="module"><b>Base de conhecimento</b><span>Produtos ligados aos anúncios das 2 contas, com manuais, vídeos, perguntas frequentes e políticas.</span></div>
+      <div class="module"><b>Configurações do agente</b><span>O que ele faz sozinho, tom por canal, horários, contas conectadas.</span></div>
+      <div class="module"><b>Painel de resultados e insights</b><span>Indicadores da semana e o relatório de melhorias por anúncio.</span></div>
+    </div>
+  </section>
+
+  <section id="roadmap">
+    <div class="sec-head"><span class="eyebrow">Do desenho ao agente no ar</span><h2>Roadmap</h2></div>
+    <div class="road">
+      <div class="stage now"><b>Contexto</b><span>Este documento, validado com você.</span></div>
+      <div class="stage"><b>Protótipo do painel</b><span>Telas navegáveis, módulo a módulo.</span></div>
+      <div class="stage"><b>Plano e tarefas</b><span>Roadmap detalhado depois do protótipo aprovado.</span></div>
+      <div class="stage"><b>Estrutura de dados</b><span>Banco no Supabase.</span></div>
+      <div class="stage"><b>Construção</b><span>Painel e agente juntos, módulo a módulo, começando pelo piloto com 100% de aprovação.</span></div>
+    </div>
+  </section>
+
+  <section id="perguntas">
+    <div class="sec-head"><span class="eyebrow">Para responder na validação</span><h2>Perguntas em aberto</h2>
+    <p class="lede">Marque conforme for respondendo. As marcações ficam salvas só neste navegador.</p></div>
+    <ul class="questions">
+      <li><label for="q1"><input type="checkbox" id="q1"><div><b>App no Mercado Livre para desenvolvedores</b><span>Quem é o titular (CNPJ?) e se o administrador das 2 contas é a mesma pessoa. Só o admin pode autorizar o agente.</span></div></label></li>
+      <li><label for="q2"><input type="checkbox" id="q2"><div><b>Acesso à API do Olist</b><span>O plano atual tem API? Quais campos de especificação estão preenchidos?</span></div></label></li>
+      <li><label for="q3"><input type="checkbox" id="q3"><div><b>Horário comercial e quem aprova</b><span>Qual o horário exato? Aprovam o dono e o assistente, com permissões diferentes?</span></div></label></li>
+      <li><label for="q4"><input type="checkbox" id="q4"><div><b>Cobertura da garantia de 30 dias</b><span>O que conta como defeito e o que é mau uso?</span></div></label></li>
+      <li><label for="q5"><input type="checkbox" id="q5"><div><b>Como aplicar os 20% do kit incompleto</b><span>Usar o percentual mais próximo que o ML oferecer ou estornar pelo Mercado Pago?</span></div></label></li>
+      <li><label for="q6"><input type="checkbox" id="q6"><div><b>Material dentro da caixa</b><span>Manual impresso ou QR para o vídeo, já que no Full o agente não pode mandar mensagem antes da entrega.</span></div></label></li>
+      <li><label for="q7"><input type="checkbox" id="q7"><div><b>Produtos com montagem mais difícil</b><span>Lista para priorizar na base de conhecimento.</span></div></label></li>
+    </ul>
+  </section>
+
+  <footer>
+    <span>Documento de contexto · Agente de atendimento para Mercado Livre · v1 · 16/10/2026</span>
+    <span>Fontes: documentação oficial para desenvolvedores do Mercado Livre e Central de Vendedores, consultadas em 14/10/2026. Os exemplos de resposta são ilustrativos.</span>
+  </footer>
+</div>
+
+<script>
+(function(){
+  var KEY='agente-ml-perguntas';
+  var saved={};
+  try{saved=JSON.parse(localStorage.getItem(KEY)||'{}')||{};}catch(e){saved={};}
+  document.querySelectorAll('.questions input').forEach(function(cb){
+    if(saved[cb.id]) cb.checked=true;
+    cb.addEventListener('change',function(){
+      saved[cb.id]=cb.checked;
+      try{localStorage.setItem(KEY,JSON.stringify(saved));}catch(e){}
+    });
+  });
+})();
+</script>

@@ -1,0 +1,549 @@
+<title>Contexto ERP Pinese</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,500..900&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --ground:#F3F4EF; --paper:#FFFFFF; --ink:#16201B; --ink-2:#4A564F; --ink-3:#7A857E;
+  --rule:#D9DDD4; --rule-2:#E8EBE4;
+  --accent:#0E6655; --accent-soft:#DDEDE8;
+  --mvp:#0E6655; --mvp-bg:#DCEEE8;
+  --f2:#9A6206; --f2-bg:#F6E9CF;
+  --out:#5C6670; --out-bg:#E6E9EC;
+  --risk:#A3322A; --risk-bg:#F6E0DD;
+  --chip-ink:#16201B;
+  --shadow:0 1px 0 rgba(22,32,27,.04), 0 6px 20px -12px rgba(22,32,27,.25);
+  --display:"Archivo","Arial Narrow",system-ui,sans-serif;
+  --body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"Cascadia Mono",Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --ground:#111614; --paper:#182019; --ink:#E7ECE8; --ink-2:#A9B4AD; --ink-3:#7D8981;
+    --rule:#2A3530; --rule-2:#222C27;
+    --accent:#5FC2A9; --accent-soft:#17342D;
+    --mvp:#6CCBB2; --mvp-bg:#173A31;
+    --f2:#E2B45C; --f2-bg:#3A2D12;
+    --out:#A7B1BA; --out-bg:#262D33;
+    --risk:#EC8A80; --risk-bg:#3D1F1C;
+    --shadow:0 1px 0 rgba(0,0,0,.3), 0 8px 24px -14px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --ground:#111614; --paper:#182019; --ink:#E7ECE8; --ink-2:#A9B4AD; --ink-3:#7D8981;
+  --rule:#2A3530; --rule-2:#222C27;
+  --accent:#5FC2A9; --accent-soft:#17342D;
+  --mvp:#6CCBB2; --mvp-bg:#173A31;
+  --f2:#E2B45C; --f2-bg:#3A2D12;
+  --out:#A7B1BA; --out-bg:#262D33;
+  --risk:#EC8A80; --risk-bg:#3D1F1C;
+  --shadow:0 1px 0 rgba(0,0,0,.3), 0 8px 24px -14px rgba(0,0,0,.7);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+body{background:var(--ground);color:var(--ink);font-family:var(--body);font-size:15.5px;line-height:1.6;padding-inline:16px;padding-block:0 64px}
+.wrap{max-width:1080px;margin:0 auto}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+
+/* nav */
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:color-mix(in srgb,var(--ground) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--rule);margin-inline:-16px;padding:10px 16px}
+.nav .wrap{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+.nav a{flex:none;font-family:var(--mono);font-size:12px;letter-spacing:.02em;text-decoration:none;color:var(--ink-2);padding:6px 10px;border-radius:6px;border:1px solid transparent}
+.nav a:hover{border-color:var(--rule);color:var(--ink)}
+
+/* hero */
+.hero{padding-block:44px 28px;display:grid;gap:22px}
+.tagline{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.tag{border:1px solid var(--rule);border-radius:4px;padding:2px 8px;color:var(--ink-2)}
+.tag.live{border-color:var(--accent);color:var(--accent)}
+h1{font-family:var(--display);font-stretch:85%;font-weight:850;font-size:clamp(34px,6vw,60px);line-height:1.02;letter-spacing:-.02em;margin:0;text-wrap:balance;max-width:20ch}
+.lede{font-size:18px;color:var(--ink-2);max-width:64ch;margin:0}
+.lede b{color:var(--ink)}
+
+/* label strip (subject detail: shipping-label stats) */
+.strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));border:1.5px solid var(--ink);border-radius:8px;background:var(--paper);overflow:hidden}
+.strip div{padding:14px 16px;border-right:1px dashed var(--rule);border-bottom:1px dashed var(--rule)}
+.strip .k{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+.strip .v{font-family:var(--display);font-stretch:90%;font-weight:800;font-size:28px;line-height:1.1;font-variant-numeric:tabular-nums}
+.strip .s{font-size:12.5px;color:var(--ink-2)}
+.barcode{height:22px;background:repeating-linear-gradient(90deg,var(--ink) 0 2px,transparent 2px 4px,var(--ink) 4px 5px,transparent 5px 8px,var(--ink) 8px 11px,transparent 11px 12px);opacity:.75;border-radius:1px}
+
+/* sections */
+section{padding-block:40px 8px;border-top:1px solid var(--rule);margin-top:24px}
+.sec-head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:18px}
+.sec-head .code{font-family:var(--mono);font-size:12px;color:var(--accent);border:1px solid var(--accent);border-radius:4px;padding:1px 7px}
+h2{font-family:var(--display);font-stretch:88%;font-weight:800;font-size:clamp(24px,3.4vw,32px);line-height:1.15;letter-spacing:-.01em;margin:0;text-wrap:balance}
+h3{font-family:var(--display);font-stretch:95%;font-weight:700;font-size:18px;margin:0 0 6px}
+p{margin:0 0 12px;max-width:68ch}
+.muted{color:var(--ink-2)}
+.small{font-size:13px}
+
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.panel{background:var(--paper);border:1px solid var(--rule);border-radius:10px;padding:18px 20px;box-shadow:var(--shadow)}
+.kv{display:grid;grid-template-columns:minmax(110px,30%) 1fr;gap:8px 16px;margin:0}
+.kv dt{font-family:var(--mono);font-size:12px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.04em;padding-top:2px}
+.kv dd{margin:0}
+
+/* pains */
+.pains{counter-reset:p;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;list-style:none;padding:0;margin:0}
+.pains li{background:var(--paper);border:1px solid var(--rule);border-radius:10px;padding:14px 16px 14px 50px;position:relative}
+.pains li::before{counter-increment:p;content:counter(p,decimal-leading-zero);position:absolute;left:14px;top:13px;font-family:var(--mono);font-size:13px;color:var(--risk);font-weight:600}
+
+/* scope */
+.legend{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.filter{font-family:var(--mono);font-size:12.5px;padding:7px 12px;border-radius:999px;border:1px solid var(--rule);background:var(--paper);color:var(--ink-2);cursor:pointer;min-height:36px}
+.filter[aria-pressed="true"]{background:var(--ink);color:var(--ground);border-color:var(--ink)}
+.dot{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:6px;vertical-align:0}
+.d-mvp{background:var(--mvp)}.d-f2{background:var(--f2)}.d-out{background:var(--out)}
+.mods{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.mod{background:var(--paper);border:1px solid var(--rule);border-radius:10px;padding:16px 18px;display:flex;flex-direction:column;gap:10px}
+.mod-top{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.mod-top h3{margin:0}
+.bar{display:flex;height:6px;border-radius:3px;overflow:hidden;background:var(--rule-2)}
+.bar i{display:block;height:100%}
+.counts{font-family:var(--mono);font-size:11.5px;color:var(--ink-3);white-space:nowrap;font-variant-numeric:tabular-nums}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-size:12.5px;line-height:1.3;padding:4px 8px;border-radius:5px;border:1px solid transparent}
+.chip b{font-family:var(--mono);font-weight:500;font-size:10.5px;opacity:.75;margin-right:5px}
+.c-mvp{background:var(--mvp-bg);color:var(--ink);border-color:color-mix(in srgb,var(--mvp) 35%,transparent)}
+.c-f2{background:var(--f2-bg);color:var(--ink);border-color:color-mix(in srgb,var(--f2) 35%,transparent)}
+.c-out{background:var(--out-bg);color:var(--ink-2);text-decoration:line-through;text-decoration-color:color-mix(in srgb,var(--out) 60%,transparent)}
+.chip.new{box-shadow:inset 0 0 0 1.5px var(--accent)}
+.chip[hidden]{display:none!important}
+.note{font-size:13px;color:var(--ink-2);border-left:3px solid var(--accent);padding:4px 0 4px 12px;margin-top:14px;max-width:none}
+
+/* diagrams */
+.flow{margin-bottom:28px}
+.flow-head{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap;margin-bottom:8px}
+.flow-head .n{font-family:var(--mono);font-size:12px;color:var(--ink-3)}
+.sheet{background:#FFFFFF;color:#16201B;border:1.5px solid var(--ink);border-radius:8px;padding:18px;overflow-x:auto}
+.sheet pre.mermaid{margin:0;background:transparent;min-width:640px;display:flex;justify-content:center;font-family:var(--body)}
+.sheet.wide pre.mermaid{min-width:860px}
+.cap{font-size:13px;color:var(--ink-2);margin-top:8px;max-width:none}
+
+/* tables */
+.tbl{overflow-x:auto;border:1px solid var(--rule);border-radius:10px;background:var(--paper)}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--rule-2);vertical-align:top}
+th{font-family:var(--mono);font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-3);font-weight:500;background:color-mix(in srgb,var(--ground) 60%,var(--paper))}
+tr:last-child td{border-bottom:0}
+.sev{font-family:var(--mono);font-size:11px;padding:2px 7px;border-radius:4px;white-space:nowrap}
+.sev.hi{background:var(--risk-bg);color:var(--risk)}
+.sev.md{background:var(--f2-bg);color:var(--f2)}
+
+/* rules */
+.rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+.rules ol{margin:0;padding-left:20px;display:grid;gap:7px}
+.rules li::marker{font-family:var(--mono);color:var(--accent);font-size:12px}
+
+/* questions */
+.qs{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:10px}
+.qs li{background:var(--paper);border:1px dashed var(--ink-3);border-radius:8px;padding:12px 14px;font-size:14.5px}
+.qs li b{font-family:var(--mono);font-size:11.5px;color:var(--accent);display:block;letter-spacing:.04em;text-transform:uppercase;margin-bottom:2px}
+
+/* steps */
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:0;border:1.5px solid var(--ink);border-radius:8px;overflow:hidden;background:var(--paper)}
+.steps div{padding:14px 16px;border-right:1px dashed var(--rule)}
+.steps .now{background:var(--accent-soft)}
+.steps .k{font-family:var(--mono);font-size:11px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.05em}
+.steps .now .k{color:var(--accent)}
+.steps strong{display:block;font-family:var(--display);font-stretch:92%;font-size:16px;margin:2px 0 4px}
+.order{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px;padding:0;list-style:none}
+.order li{font-size:13px;background:var(--paper);border:1px solid var(--rule);border-radius:5px;padding:5px 9px}
+.order li span{font-family:var(--mono);color:var(--ink-3);font-size:11px;margin-right:5px}
+footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--rule);font-size:13px;color:var(--ink-3)}
+footer code{font-family:var(--mono);font-size:12px}
+@media (max-width:520px){
+  .kv{grid-template-columns:1fr}
+  .kv dt{padding-top:6px}
+  .strip .v{font-size:24px}
+}
+</style>
+
+<nav class="nav" aria-label="Seções">
+  <div class="wrap">
+    <a href="#operacao">Operação</a><a href="#dores">Dores</a><a href="#modulos">Módulos e escopo</a><a href="#pedido">Fluxo do pedido</a><a href="#sync">Estoque e preço</a><a href="#devolucao">Devolução</a><a href="#full">Reposição Full</a><a href="#arquitetura">Arquitetura</a><a href="#regras">Regras</a><a href="#riscos">Riscos</a><a href="#perguntas">Em aberto</a><a href="#proximos">Próximos passos</a>
+  </div>
+</nav>
+
+<main class="wrap">
+  <header class="hero">
+    <div class="tagline"><span class="tag live">Fase 1 · Contexto</span><span class="tag">v1 · 27/10/2026</span><span>Para validação</span></div>
+    <h1>ERP Pinese: multiempresa, multiconta, Mercado Livre primeiro</h1>
+    <p class="lede">Um ERP próprio que <b>substitui o Olist e o Mercado Turbo</b>, controla <b>4 empresas e 4 contas do Mercado Livre</b> a partir de um galpão único e é o <b>dono da integração com o ML</b>, a mesma camada que alimenta o agente de IA de atendimento no mesmo painel.</p>
+    <div class="strip" role="list" aria-label="Números da operação">
+      <div role="listitem"><div class="k">Empresas · contas ML</div><div class="v">4 · 4</div><div class="s">3 Simples + 1 MEI · sem limite no ERP</div></div>
+      <div role="listitem"><div class="k">Pedidos / mês</div><div class="v">~1.079</div><div class="s">só na conta que está no Olist</div></div>
+      <div role="listitem"><div class="k">Produtos · anúncios</div><div class="v">45 · ~116</div><div class="s">37 simples · 7 kits · 1 variação</div></div>
+      <div role="listitem"><div class="k">NF-e / mês</div><div class="v">~2.000</div><div class="s">100% Faturador do ML, importadas</div></div>
+      <div role="listitem"><div class="k">Devoluções</div><div class="v">822</div><div class="s">registros históricos no Olist</div></div>
+      <div role="listitem"><div class="k">Features mapeadas</div><div class="v">177</div><div class="s">Olist (via REA), Bling, Omie, hubs, API ML</div><div class="barcode" aria-hidden="true"></div></div>
+    </div>
+  </header>
+
+  <section id="operacao">
+    <div class="sec-head"><span class="code">01</span><h2>A operação hoje</h2></div>
+    <div class="grid2">
+      <div class="panel">
+        <dl class="kv">
+          <dt>Contas</dt><dd><b>Mercado Mestre</b> é a principal; 3 secundárias, cada uma com um CNPJ. Só a principal está no Olist.</dd>
+          <dt>Por que várias</dt><dd>Reduzir impostos e aparecer mais vezes no ML. Catálogo parcialmente igual entre as contas.</dd>
+          <dt>Canais</dt><dd>Só o Mercado Livre vende (Full + coleta/agência). Futuro: B2B, licitação, site próprio.</dd>
+          <dt>Estoque</dt><dd>Um galpão para todas as empresas + o Full de cada conta. A transferência entre empresas às vezes sai sem NF.</dd>
+        </dl>
+      </div>
+      <div class="panel">
+        <dl class="kv">
+          <dt>Fiscal</dt><dd>O Faturador do ML emite todas as notas. O desejo é ter um emissor próprio (Fase 2).</dd>
+          <dt>Financeiro</dt><dd>Mercado Turbo: margem, repasses MP, métricas de anúncio, fluxo de caixa, contas a pagar e a receber, DRE e BP.</dd>
+          <dt>Equipe</dt><dd>Dono + 1 pessoa na logística. Contabilidade externa acessa o ERP.</dd>
+          <dt>Rotina</dt><dd>Separar, embalar e etiquetar (<b>TSC TE200</b>) · repor o Full · triar devoluções. O atendimento fica com a IA.</dd>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <section id="dores">
+    <div class="sec-head"><span class="code">02</span><h2>O que precisa deixar de doer</h2></div>
+    <ol class="pains">
+      <li><b>Duas mensalidades</b> (Olist Domine + Mercado Turbo), com funções-chave presas a planos caros e bloqueio de escrita no limite de armazenamento.</li>
+      <li><b>Integração opaca</b>: mapeamentos com erro, token da Shopee expirado sem alerta, relatos de Full duplicado e estoque somado errado.</li>
+      <li><b>Só 1 das 4 contas integrada.</b> As outras ficam fora do controle de estoque, pedidos e margem.</li>
+      <li><b>Margem real e repasses</b> fora do ERP; não existe conferência de repasse × pedido.</li>
+      <li><b>Sem visão por empresa</b> de estoque, faturamento, impostos e contabilidade.</li>
+      <li><b>O agente não tem onde buscar</b> manual, vídeo, garantia e FAQ de cada produto.</li>
+      <li><b>Reposição do Full no olho</b>, sem giro nem cobertura por conta.</li>
+      <li><b>Estoque de segurança único</b> por integração, não por anúncio/conta.</li>
+    </ol>
+  </section>
+
+  <section id="modulos">
+    <div class="sec-head"><span class="code">03</span><h2>Mapa de módulos e escopo</h2></div>
+    <p class="muted">Cada etiqueta é uma feature do mapa (<code>01-mapa-de-features.md</code>). As de borda verde são <b>novidades que o Olist não tem</b>. Filtre pela fase:</p>
+    <div class="legend" role="group" aria-label="Filtrar por fase">
+      <button class="filter" type="button" data-f="all" aria-pressed="true" id="f-all">Todas</button>
+      <button class="filter" type="button" data-f="mvp" aria-pressed="false" id="f-mvp"><span class="dot d-mvp"></span>MVP</button>
+      <button class="filter" type="button" data-f="f2" aria-pressed="false" id="f-f2"><span class="dot d-f2"></span>Fase 2</button>
+      <button class="filter" type="button" data-f="out" aria-pressed="false" id="f-out"><span class="dot d-out"></span>Fora</button>
+    </div>
+    <div class="mods" id="mods"></div>
+    <p class="note">O MVP é único e modular: tira do ar o Olist <b>e</b> o Mercado Turbo e alimenta o agente. Ficam para a Fase 2 só o <b>emissor NF-e próprio</b> e os <b>relatórios contábeis</b>; a base contábil (partidas dobradas) já nasce no MVP.</p>
+  </section>
+
+  <section id="pedido">
+    <div class="sec-head"><span class="code">04</span><h2>Fluxo do pedido: da venda ao repasse</h2></div>
+    <div class="flow">
+      <div class="sheet wide">
+<pre class="mermaid">
+%%{init: {"theme":"base","themeVariables":{"fontFamily":"IBM Plex Sans, sans-serif","fontSize":"14px","primaryColor":"#DCEEE8","primaryBorderColor":"#0E6655","primaryTextColor":"#16201B","lineColor":"#4A564F","secondaryColor":"#F6E9CF","tertiaryColor":"#F3F4EF"}}}%%
+flowchart TD
+  A["Comprador paga no ML<br/>conta Mercado Mestre ou secundária"] --> W["Receptor de webhook orders_v2<br/>grava e responde em até 500 ms"]
+  W --> Q[("Fila de eventos")]
+  Q --> P["Worker busca pack e orders<br/>pedido idempotente no ERP"]
+  P --> L{"Logística?"}
+  L -- "Full" --> F1["Baixa no depósito Full da conta<br/>espelho do saldo do ML"]
+  F1 --> F2["Faturador do ML emite a NF<br/>ERP importa o XML"]
+  F2 --> FIN
+  L -- "Coleta / agência" --> R["Reserva no galpão<br/>saldo republicado nas 4 contas"]
+  R --> O{"Unidade é da empresa<br/>dona da conta?"}
+  O -- "não" --> T["Transferência entre empresas<br/>com NF ou interna marcada"]
+  O -- "sim" --> NF
+  T --> NF["NF: Faturador do ML no MVP<br/>emissor próprio na Fase 2"]
+  NF --> S["Separação e conferência<br/>com bipagem"]
+  S --> E["Etiquetas em lote na TSC TE200<br/>agrupamento de coleta"]
+  E --> D["Despachado: baixa do estoque<br/>e rastreio"]
+  D --> FIN["Contas a receber pelo bruto<br/>menos comissão, custo fixo, frete, cupom"]
+  FIN --> C["Conferência com a liberação<br/>do Mercado Pago, por pedido"]
+  C --> M["Margem por pedido, SKU,<br/>anúncio, conta e empresa"]
+  C --> CT["Lançamento contábil<br/>partidas dobradas por empresa"]
+  classDef fase2 fill:#F6E9CF,stroke:#9A6206,color:#16201B;
+  class NF fase2;
+</pre>
+      </div>
+      <p class="cap">Em amarelo: o ponto que muda na Fase 2 (emissor próprio). Pedidos ficam só 12 meses na API do ML, então o ERP passa a ser a fonte histórica.</p>
+    </div>
+  </section>
+
+  <section id="sync">
+    <div class="sec-head"><span class="code">05</span><h2>Sincronização de estoque e preço entre as contas</h2></div>
+    <div class="flow">
+      <div class="sheet wide">
+<pre class="mermaid">
+%%{init: {"theme":"base","themeVariables":{"fontFamily":"IBM Plex Sans, sans-serif","fontSize":"14px","primaryColor":"#DCEEE8","primaryBorderColor":"#0E6655","primaryTextColor":"#16201B","lineColor":"#4A564F","tertiaryColor":"#F3F4EF"}}}%%
+flowchart LR
+  EV["Evento: venda, cancelamento,<br/>entrada, inventário, devolução triada"] --> SAL["Disponível no galpão<br/>físico menos reservas"]
+  SAL --> CALC["Por anúncio:<br/>disponível menos segurança da conta"]
+  PR["Preço: custo + regra da conta<br/>calculadora de margem"] --> G{"Abaixo do piso<br/>de margem?"}
+  G -- "sim" --> B["Bloqueia e alerta"]
+  G -- "não" --> OUT
+  CALC --> OUT[("Fila de saída<br/>ritmo limitado por conta e recurso")]
+  OUT --> RT{"Tipo de anúncio"}
+  RT -- "comum" --> U1["Atualiza available_quantity"]
+  RT -- "multiorigem" --> U2["Atualiza seller_warehouse<br/>com controle de versão"]
+  RT -- "Full" --> U3["Não envia: saldo é do ML<br/>ERP só espelha"]
+  U1 --> ML["Contas: Mercado Mestre + 3 secundárias"]
+  U2 --> ML
+  ML --> CONF["Webhook items confirma<br/>monitor de integração registra erros"]
+</pre>
+      </div>
+      <p class="cap">O mesmo saldo vale para todas as contas, menos o estoque de segurança de cada anúncio. A cada venda o ERP recalcula e republica em segundos. Replicar anúncios entre contas exige diferenciação (título, tipo, frete) por causa da política de duplicados do ML.</p>
+    </div>
+  </section>
+
+  <section id="devolucao">
+    <div class="sec-head"><span class="code">06</span><h2>Devolução: da reclamação à triagem</h2></div>
+    <div class="flow">
+      <div class="sheet">
+<pre class="mermaid">
+%%{init: {"theme":"base","themeVariables":{"fontFamily":"IBM Plex Sans, sans-serif","fontSize":"14px","primaryColor":"#DCEEE8","primaryBorderColor":"#0E6655","primaryTextColor":"#16201B","lineColor":"#4A564F","tertiaryColor":"#F3F4EF"}}}%%
+flowchart TD
+  RC["Comprador abre reclamação<br/>ou pede devolução"] --> AG["Painel de atendimento + agente IA<br/>prazo de 48 h e due_date"]
+  AG --> DEC{"Resolução aprovada<br/>pelo humano"}
+  DEC -- "reembolso sem devolução" --> FR["Estorno e custo registrados<br/>no financeiro"]
+  DEC -- "devolução" --> TP{"Pedido Full?"}
+  TP -- "sim, volta ao CD" --> ND["ML emite NF de devolução<br/>ERP importa e ajusta o saldo Full"]
+  TP -- "não, ou volta ao vendedor" --> RE["Recebe no galpão<br/>depósito Devoluções"]
+  RE --> TR{"Triagem"}
+  TR -- "vendável" --> V["Transfere para o Galpão<br/>volta a ser publicado"]
+  TR -- "avaria" --> AV["Baixa por avaria<br/>revisão no ML"]
+  TR -- "descarte" --> DS["Baixa por perda"]
+  V --> TB["Tributário confere a NF de devolução<br/>MVP: do ML · Fase 2: ERP emite"]
+  AV --> TB
+  DS --> TB
+  ND --> TB
+  TB --> IN["Motivo, custo e SKU<br/>relatório de devoluções e insights do agente"]
+</pre>
+      </div>
+      <p class="cap">O agente sugere e o humano aprova (a alçada financeira do agente é zero). O motivo de cada devolução volta como insight para melhorar o anúncio.</p>
+    </div>
+  </section>
+
+  <section id="full">
+    <div class="sec-head"><span class="code">07</span><h2>Reposição do galpão e do Full</h2></div>
+    <div class="flow">
+      <div class="sheet">
+<pre class="mermaid">
+%%{init: {"theme":"base","themeVariables":{"fontFamily":"IBM Plex Sans, sans-serif","fontSize":"14px","primaryColor":"#DCEEE8","primaryBorderColor":"#0E6655","primaryTextColor":"#16201B","lineColor":"#4A564F","tertiaryColor":"#F3F4EF"}}}%%
+flowchart LR
+  V["Vendas por conta<br/>e por SKU"] --> GI["Giro e cobertura<br/>por conta"]
+  SF["Saldo Full espelhado<br/>por conta"] --> GI
+  GI --> SFULL["Sugestão de envio ao Full<br/>quantidade por conta e SKU"]
+  GI --> PP["Ponto de pedido por conta<br/>somado no galpão"]
+  PP --> OC["Sugestão de compra<br/>ordem de compra simples"]
+  OC --> ENT["Entrada por XML<br/>custo de reposição"]
+  SFULL --> PAINEL["Envio criado no painel do ML<br/>a API não cria inbound"]
+  PAINEL --> REM["NF de remessa pelo Faturador<br/>ERP importa e transfere o saldo"]
+</pre>
+      </div>
+      <p class="cap">O estoque Full só pode ser lido pela API: o ERP planeja, sugere e registra, mas o envio é criado no Seller Center.</p>
+    </div>
+  </section>
+
+  <section id="arquitetura">
+    <div class="sec-head"><span class="code">08</span><h2>Arquitetura: ERP dono da integração, agente no mesmo painel</h2></div>
+    <div class="flow">
+      <div class="sheet wide">
+<pre class="mermaid">
+%%{init: {"theme":"base","themeVariables":{"fontFamily":"IBM Plex Sans, sans-serif","fontSize":"14px","primaryColor":"#DCEEE8","primaryBorderColor":"#0E6655","primaryTextColor":"#16201B","lineColor":"#4A564F","clusterBkg":"#F3F4EF","clusterBorder":"#7A857E","tertiaryColor":"#F3F4EF"}}}%%
+flowchart LR
+  subgraph MLB["Mercado Livre: 1 aplicação por titular"]
+    CT["4 contas autorizadas<br/>pelo admin de cada uma"]
+    API[("API ML + Mercado Pago")]
+  end
+  subgraph VER["Vercel: Next.js, painel único"]
+    WH["Receptor de webhook<br/>só grava e responde"]
+    OA["Callback OAuth"]
+    UI["Painel: ERP + atendimento"]
+  end
+  subgraph SB["Supabase Cloud"]
+    subgraph SML["schema ml"]
+      TK[("Tokens por conta")]
+      EQ[("Fila de eventos")]
+      OQ[("Fila de saída")]
+    end
+    subgraph SERP["schema erp"]
+      DB[("Empresas, produtos e base de conhecimento,<br/>estoque, pedidos, fiscal, financeiro, contábil")]
+    end
+    subgraph SAG["schema agente"]
+      CV[("Conversas, sugestões, aprovações")]
+    end
+    WK["Workers: Edge Functions + pg_cron<br/>token broker com trava por conta"]
+  end
+  AGT["Agente IA<br/>LangGraph.js"]
+  CT --> OA --> TK
+  API -- "notificação" --> WH --> EQ
+  EQ --> WK
+  WK <--> API
+  WK --> DB
+  TK --> WK
+  OQ --> WK
+  EQ -- "questions, messages, post_purchase" --> AGT
+  AGT -- "lê produtos, pedidos, envios" --> DB
+  AGT --> CV
+  AGT -- "respostas aprovadas" --> OQ
+  UI <--> DB
+  UI <--> CV
+</pre>
+      </div>
+      <p class="cap">O agente nunca renova token nem recebe webhook diretamente: tudo passa pela camada ML do ERP. Mesmo monorepo, mesmo banco, tipos e validações compartilhados.</p>
+    </div>
+  </section>
+
+  <section id="regras">
+    <div class="sec-head"><span class="code">09</span><h2>Regras de negócio que guiam o desenho</h2></div>
+    <div class="rules">
+      <div class="panel"><h3>Empresas e acesso</h3><ol>
+        <li>N empresas (CNPJ, regime MEI/Simples/Normal, UF) × N contas de marketplace.</li>
+        <li>Conta principal (Mercado Mestre) recebe as despesas comuns; sem rateio.</li>
+        <li>Perfis: Dono · Logística (sem custo e margem) · Contador (leitura + exportação) · Tributário (NFs, devoluções, fechamento).</li>
+      </ol></div>
+      <div class="panel"><h3>Produto e estoque</h3><ol>
+        <li>1 produto → N anúncios em N contas (SELLER_SKU + User Products).</li>
+        <li>Estoque em duas dimensões: local físico × empresa dona.</li>
+        <li>Saldo publicado = disponível − segurança do anúncio, igual em todas as contas.</li>
+        <li>Full é do ML: o ERP espelha, guarda histórico e aponta divergências.</li>
+        <li>Transferência entre empresas com NF ou interna; as sem NF ficam como pendência.</li>
+      </ol></div>
+      <div class="panel"><h3>Pedido, fiscal e dinheiro</h3><ol>
+        <li>Pedido idempotente via webhook + reconciliação; o ERP guarda o histórico.</li>
+        <li>MVP: Faturador do ML emite; o ERP envia regras tributárias e importa tudo.</li>
+        <li>Cada venda guarda bruto, comissão, custo fixo, frete, cupom, imposto e custo.</li>
+        <li>A receber conferido com a liberação do Mercado Pago.</li>
+        <li>Todo evento gera lançamento contábil; dinheiro e estoque são calculados no servidor.</li>
+      </ol></div>
+    </div>
+  </section>
+
+  <section id="riscos">
+    <div class="sec-head"><span class="code">10</span><h2>Riscos</h2></div>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>Risco</th><th>Peso</th><th>Como tratar</th></tr></thead>
+        <tbody>
+          <tr><td>Várias empresas do mesmo dono, com galpão e estoque comuns, para reduzir imposto podem ser vistas como <b>grupo econômico de fato</b> (exclusão do Simples, cobrança retroativa).</td><td><span class="sev hi">Alto</span></td><td>Validar com contador/advogado. O ERP registra a propriedade por CNPJ e cada transferência.</td></tr>
+          <tr><td><b>Transferências entre empresas sem NF</b> deixam estoque e contábil sem lastro.</td><td><span class="sev hi">Alto</span></td><td>NF entre empresas com um clique; as sem NF ficam visíveis como pendência.</td></tr>
+          <tr><td><b>Política de duplicados e ações em massa</b> do ML entre contas.</td><td><span class="sev hi">Alto</span></td><td>Replicação com diferenciação obrigatória e ritmo limitado.</td></tr>
+          <tr><td><b>MVP grande</b>: multiempresa, publicação e replicação, métricas, conciliação MP, base contábil.</td><td><span class="sev md">Médio</span></td><td>Protótipo validado por módulo; ordem guiada pelo que desliga o Olist primeiro.</td></tr>
+          <tr><td><b>Workers só em serverless</b> (limite de duração, webhook de 500 ms).</td><td><span class="sev md">Médio</span></td><td>Receptor mínimo, fila em Postgres, reconciliação diária; container se preciso.</td></tr>
+          <tr><td><b>Refresh token de uso único</b> em 4 contas.</td><td><span class="sev md">Médio</span></td><td>Token broker com trava e alerta de reconexão.</td></tr>
+          <tr><td><b>Sem sandbox</b> no ML.</td><td><span class="sev md">Médio</span></td><td>Usuários de teste, respostas gravadas, semanas iniciais em modo leitura.</td></tr>
+          <tr><td>Relatórios do Mercado Pago podem exigir <b>credencial MP própria</b>.</td><td><span class="sev md">Médio</span></td><td>Validar logo no início com a conta real.</td></tr>
+          <tr><td><b>Métricas de concorrência</b>: o ML proíbe scraping; a API só dá dados próprios e de catálogo.</td><td><span class="sev md">Médio</span></td><td>Alinhar expectativa: visitas, conversão, Ads, price_to_win.</td></tr>
+          <tr><td><b>TSC TE200</b> pode não emular ZPL.</td><td><span class="sev md">Médio</span></td><td>Testar já no protótipo: ZPL ou PDF via driver.</td></tr>
+          <tr><td><b>Emissor próprio</b> (Fase 2): SEFAZ, contingência, reforma tributária.</td><td><span class="sev md">Médio</span></td><td>Fase isolada, homologação SEFAZ por empresa.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="perguntas">
+    <div class="sec-head"><span class="code">11</span><h2>Perguntas em aberto</h2></div>
+    <ul class="qs">
+      <li><b>Empresas</b>UF e endereço das 4 empresas (o Full self storage CAT 59 é de SP). Todas no endereço do galpão?</li>
+      <li><b>MEI</b>A conta MEI usa Full e Faturador? Que limite de faturamento monitorar?</li>
+      <li><b>Contas ML</b>As contas são vinculadas entre si no ML? Já houve aviso de duplicidade?</li>
+      <li><b>Banco</b>Um banco por empresa ou um único compartilhado?</li>
+      <li><b>Migração</b>Quanto histórico trazer do Olist (12 meses? tudo?) e acesso à API v3 no plano Domine.</li>
+      <li><b>Contador</b>Qual plano de contas usar e em que formato ele quer as exportações?</li>
+      <li><b>Devolução</b>No MVP o tributário só confere as NFs de devolução emitidas pelo ML. Confirma?</li>
+      <li><b>Flex</b>Há interesse em entregar na sua região? Em qual cidade?</li>
+      <li><b>Políticas</b>Garantia, troca e regras do agente ficam nas configurações do ERP. Confirma?</li>
+      <li><b>Logins</b>Quantas pessoas por perfil (dono, logística, contador, tributário)?</li>
+      <li><b>Impressora</b>Modelo exato e firmware da TSC TE200 (emula ZPL?).</li>
+    </ul>
+  </section>
+
+  <section id="proximos">
+    <div class="sec-head"><span class="code">12</span><h2>Próximos passos</h2></div>
+    <div class="steps">
+      <div class="now"><div class="k">Agora</div><strong>Validar o contexto</strong><span class="small muted">Este documento e o 02-contexto-erp.md.</span></div>
+      <div><div class="k">Depois</div><strong>Protótipo HTML</strong><span class="small muted">Layout + login + menu; depois 1 módulo por vez, aprovado vendo.</span></div>
+      <div><div class="k">Em seguida</div><strong>Roadmap e tarefas</strong><span class="small muted">Com o protótipo aprovado.</span></div>
+      <div><div class="k">Então</div><strong>Dados e código</strong><span class="small muted">Schema Supabase e código módulo a módulo até o MVP.</span></div>
+    </div>
+    <p class="muted" style="margin-top:16px">Ordem sugerida dos módulos no protótipo:</p>
+    <ol class="order">
+      <li><span>1</span>Layout, login, menu</li><li><span>2</span>Empresas e contas ML</li><li><span>3</span>Produtos + base de conhecimento</li><li><span>4</span>Anúncios: vincular, publicar, replicar</li><li><span>5</span>Estoque e Full</li><li><span>6</span>Pedidos</li><li><span>7</span>Separação, etiquetas, expedição</li><li><span>8</span>Devoluções</li><li><span>9</span>Atendimento (inbox)</li><li><span>10</span>Compras e reposição</li><li><span>11</span>Financeiro: repasses, DRE</li><li><span>12</span>Dashboards e margem</li><li><span>13</span>Fiscal e contábil</li><li><span>14</span>Configurações e usuários</li>
+    </ol>
+  </section>
+
+  <footer>
+    Fonte: engenharia reversa da conta Olist (REA, somente leitura), documentação Olist/Tiny, Bling, Omie, Ideris, Anymarket e API oficial do Mercado Livre · entrevista de escopo em 9 rodadas.<br>
+    Detalhes completos em <code>erp/docs/01-mapa-de-features.md</code> e <code>erp/docs/02-contexto-erp.md</code>.
+  </footer>
+</main>
+
+<script>
+(function(){
+  // m = MVP, 2 = Fase 2, x = Fora; n = novidade (o Olist não tem)
+  var MODS = [
+    {t:"Núcleo e plataforma", i:[
+      ["CAD-28","Empresas e contas sem limite","m",1],["OUT-01","4 perfis com escopo por empresa","m"],["OUT-02","Acesso do contador","m"],["OUT-04","Auditoria geral","m"],["OUT-08","Alertas e notificações","m"],["OUT-11","Exportação e backup","m"],["OUT-15","Migração do Olist","m",1],["OUT-03","2FA e restrições de acesso","2"],["OUT-06","API pública e webhooks de saída","2"],["OUT-07","MCP do ERP","2"],["OUT-09","Assistente de IA no ERP","2"],["OUT-12","Envio de documentos","2"],["OUT-13","Loja de extensões","x"]]},
+    {t:"Cadastros", i:[
+      ["CAD-01","Produto simples","m"],["CAD-02","Variações","m"],["CAD-03","Kits","m"],["CAD-06","Produto → N anúncios em N contas","m",1],["CAD-07","Dados fiscais","m"],["CAD-09","Ficha técnica","m"],["CAD-10","Base de conhecimento do agente","m",1],["CAD-11","Imagens e anexos","m"],["CAD-13","Descrição e SEO","m"],["CAD-14","Categorias","m"],["CAD-15","Marcas e tags","m"],["CAD-19","Custos e histórico","m"],["CAD-20","Fornecedores do produto","m"],["CAD-22","Contatos","m"],["CAD-23","Cliente automático via pedido","m"],["CAD-27","Intermediadores","m"],["CAD-29","Planilhas e ações em lote","m"],["CAD-30","Importar a partir dos anúncios","m"],
+      ["CAD-04","Kit com variações","2"],["CAD-08","NCM por IA","2"],["CAD-12","Imagem por IA","2"],["CAD-16","Tabela de medidas","2"],["CAD-17","Campos customizados","2"],["CAD-18","Listas de preço","2"],["CAD-21","Embalagens","2"],["CAD-24","Consulta CNPJ","2"],["CAD-31","Validação pré-publicação","2"],
+      ["CAD-05","Produção / BOM","x"],["CAD-25","Limite de crédito","x"],["CAD-26","Vendedores","x"]]},
+    {t:"Estoque", i:[
+      ["EST-04","Local físico × empresa dona","m",1],["EST-01","Saldo, reserva, custo médio","m"],["EST-03","Histórico auditado","m"],["EST-05","Transferências, inclusive entre empresas","m",1],["EST-06","Reserva","m"],["EST-07","Gatilhos de baixa e entrada","m"],["EST-10","Segurança por anúncio e conta","m",1],["EST-11","Sync com todas as contas","m"],["EST-12","Espelho do Full","m",1],["EST-13","Histórico do Full","m",1],["EST-14","Conferência Full × ERP","m",1],["EST-15","Inventário","m"],["EST-16","Custo médio","m"],["EST-18","Localização","m"],["EST-19","Alertas de mínimo","m"],["EST-20","Triagem de devoluções","m"],["EST-22","Pausa e reativação","m"],["EST-23","Multiorigem ML","m"],
+      ["EST-17","Lotes e validade","2"]]},
+    {t:"Vendas e pedidos", i:[
+      ["VEN-01","Importação das 4 contas","m"],["VEN-02","Fila e reprocessamento","m"],["VEN-03","Carrinhos (pack)","m"],["VEN-04","Situações e mapeamento","m"],["VEN-05","Automações entre situações","m"],["VEN-07","Marcadores","m"],["VEN-08","Prazo de despacho","m"],["VEN-09","Cancelamentos","m"],["VEN-10","Devoluções completas","m"],["VEN-11","Reclamações","m"],["VEN-12/13","Painel completo de atendimento","m",1],["VEN-15","Descontos e cupons","m"],
+      ["VEN-06","Pedido manual","2"],["VEN-14","Feedback de venda","2"],["VEN-16","Alerta de fraude","2"],["VEN-21","Faturamento parcial","2"],
+      ["VEN-17","Propostas","x"],["VEN-18","CRM","x"],["VEN-19","Comissões e metas","x"],["VEN-20","PDV","x"],["VEN-22","OS e contratos","x"]]},
+    {t:"Fiscal e contábil", i:[
+      ["FIS-01","Importar todas as notas do ML","m"],["FIS-02","Alimentar o Faturador por empresa","m"],["FIS-06","Naturezas e regras por empresa","m"],["FIS-10","Entrada por XML","m"],["FIS-17","Exportação para contador","m"],["CTB","Base contábil em partidas dobradas","m",1],
+      ["FIS-03","Emissor NF-e próprio","2",1],["FIS-04","XML ao ML","2"],["FIS-07","Certificado A1","2"],["FIS-08","Cancelamento, CC-e, inutilização","2"],["FIS-11","DF-e e manifestação","2"],["FIS-14","DIFAL","2"],["FIS-15","Reforma tributária","2"],["CTB-R","DRE e BP contábeis","2",1],
+      ["FIS-13","NFC-e, NFS-e, CT-e, MDF-e","x"],["FIS-16","SPED","x"]]},
+    {t:"Compras", i:[
+      ["COM-01","Ordem de compra simples","m"],["COM-02","Entrada por XML","m"],["COM-04","Custo de reposição","m"],["COM-05","Ponto de pedido por conta","m",1],["COM-06","Sugestão de reposição do Full","m",1],
+      ["COM-03","Conferência com bipagem","2"],["COM-07","Aprovação de compra","x"],["COM-08","Nota de importação","x"]]},
+    {t:"Financeiro", i:[
+      ["FIN-01","Contas a pagar","m"],["FIN-02","Contas a receber automático","m"],["FIN-03","Contas por empresa (MP + banco)","m"],["FIN-04","Categorias","m"],["FIN-06","Taxas do ML em cada venda","m",1],["FIN-07","Conferência de repasses MP","m",1],["FIN-08","Conferência das cobranças ML","m",1],["FIN-10","DRE gerencial por empresa e conta","m"],["FIN-11","Fluxo de caixa","m"],["FIN-13","Custos do Full","m",1],["FIN-14","Simulador de custo de vender","m"],["FIN-15","Fechamento de período","m"],
+      ["FIN-05","Centro de custo","2"],["FIN-09","Conciliação bancária OFX","2"],["FIN-12","Boletos e CNAB","x"]]},
+    {t:"Marketplaces", i:[
+      ["MKT-01","Conexão e token broker","m"],["MKT-02","Webhooks e fila de eventos","m"],["MKT-03","Recuperação e reconciliação","m"],["MKT-04","Gestão de anúncios","m"],["MKT-05","Vínculo anúncio ↔ produto","m"],["MKT-06","Publicar a partir do produto","m"],["MKT-07","Replicar entre contas","m",1],["MKT-08","Edição em massa","m"],["MKT-09","Preço com regra por conta","m"],["MKT-10","Calculadora e piso de margem","m"],["MKT-15","Saúde dos anúncios","m"],["MKT-16","Monitor de integração","m",1],["MKT-17","Mapeamentos","m"],["MKT-18","Sugestão de preço ML","m"],["MKT-19","Visitas, conversão e Ads","m",1],["MKT-20","Reputação por conta","m",1],
+      ["MKT-11","Central de promoções","2"],["MKT-12","Campanhas do ERP","2"],["MKT-13","Catálogo","2"],["MKT-14","Kit virtual","2"],["MKT-21","Novos canais (B2B, licitação, site)","2"]]},
+    {t:"Logística", i:[
+      ["LOG-01","Separação","m"],["LOG-02","Conferência com bipagem","m"],["LOG-03","Etiquetas em lote","m"],["LOG-12","Impressão direta TSC TE200","m"],["LOG-04","Agrupamento de coleta e romaneio","m"],["LOG-05","Coleta e agência","m"],["LOG-07","Full","m"],["LOG-08","Rastreio","m"],["LOG-09","Devoluções e reversa","m"],
+      ["LOG-06","Flex","2"],["LOG-10","Horários de despacho","2"],["LOG-13","Dividir envio","2"],["LOG-11","Correios e transportadoras","x"]]},
+    {t:"Relatórios e BI", i:[
+      ["BI-01","Margem por pedido, SKU, anúncio, conta","m",1],["BI-02","Dashboard por conta e empresa","m"],["BI-03","Curva ABC","m"],["BI-04","Giro e cobertura","m"],["BI-05","Ruptura","m"],["BI-06","Relatórios de exceção","m",1],["BI-07","Devoluções por motivo e custo","m",1],["BI-10","Saldos em data passada","m"],
+      ["BI-08","Vendas por UF e horário","2"],["BI-09","Relatório personalizado","2"],["BI-11","BI externo e MCP","2"]]}
+  ];
+  var CLS={m:"c-mvp","2":"c-f2",x:"c-out"}, KEY={m:"mvp","2":"f2",x:"out"}, NAME={m:"MVP","2":"Fase 2",x:"Fora"};
+  var root=document.getElementById("mods");
+  MODS.forEach(function(md){
+    var c={m:0,"2":0,x:0}; md.i.forEach(function(it){c[it[2]]++});
+    var tot=md.i.length;
+    var el=document.createElement("article"); el.className="mod";
+    var top=document.createElement("div"); top.className="mod-top";
+    var h=document.createElement("h3"); h.textContent=md.t;
+    var ct=document.createElement("span"); ct.className="counts"; ct.textContent=c.m+" MVP · "+c["2"]+" F2 · "+c.x+" fora";
+    top.appendChild(h); top.appendChild(ct);
+    var bar=document.createElement("div"); bar.className="bar"; bar.setAttribute("aria-hidden","true");
+    [["m","var(--mvp)"],["2","var(--f2)"],["x","var(--out)"]].forEach(function(p){var b=document.createElement("i");b.style.width=(c[p[0]]/tot*100)+"%";b.style.background=p[1];bar.appendChild(b)});
+    var chips=document.createElement("div"); chips.className="chips";
+    md.i.forEach(function(it){
+      var s=document.createElement("span"); s.className="chip "+CLS[it[2]]+(it[3]?" new":""); s.dataset.f=KEY[it[2]];
+      s.title=NAME[it[2]]+(it[3]?" · novidade, o Olist não tem":"");
+      var b=document.createElement("b"); b.textContent=it[0]; s.appendChild(b); s.appendChild(document.createTextNode(it[1]));
+      chips.appendChild(s);
+    });
+    el.appendChild(top); el.appendChild(bar); el.appendChild(chips); root.appendChild(el);
+  });
+  var btns=document.querySelectorAll(".filter");
+  function apply(f){
+    btns.forEach(function(b){b.setAttribute("aria-pressed",String(b.dataset.f===f))});
+    document.querySelectorAll(".chip").forEach(function(ch){ch.hidden=!(f==="all"||ch.dataset.f===f)});
+    try{localStorage.setItem("pinese-filter",f)}catch(e){}
+  }
+  btns.forEach(function(b){b.addEventListener("click",function(){apply(b.dataset.f)})});
+  var saved="all"; try{saved=localStorage.getItem("pinese-filter")||"all"}catch(e){}
+  apply(saved);
+})();
+</script>
